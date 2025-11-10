@@ -1,0 +1,5 @@
+{
+  "name": "Empathy Scale Test",
+  "description": "A Likert scale test, similar to MBTI, to measure empathy across four dimensions: self, others, objects, and situations.",
+  "requestFramePermissions": []
+}
