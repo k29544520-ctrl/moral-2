@@ -13,9 +13,9 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questions, onComplete }) 
   const [isFading, setIsFading] = useState(false);
 
   const totalQuestions = questions.length;
-  const progress = ((currentQuestionIndex) / totalQuestions) * 100;
   const currentQuestion = questions[currentQuestionIndex];
-
+  const progress = currentQuestion ? (currentQuestion.id / totalQuestions) * 100 : 0;
+  
   useEffect(() => {
     if (currentQuestionIndex >= totalQuestions) {
       onComplete(answers);
@@ -59,7 +59,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questions, onComplete }) 
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-semibold text-teal-500">진행률</span>
           <span className="text-sm font-semibold text-slate-600 dark:text-slate-400">
-            {currentQuestionIndex + 1} / {totalQuestions}
+            {currentQuestion.id} / {totalQuestions}
           </span>
         </div>
         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
@@ -73,7 +73,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questions, onComplete }) 
       {/* Question */}
       <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
         <p className="text-center text-slate-500 dark:text-slate-400 mb-4 text-lg">
-          문항 {currentQuestionIndex + 1}
+          문항 {currentQuestion.id}
         </p>
         <h2 className="text-xl md:text-2xl font-bold text-center text-slate-800 dark:text-slate-100 min-h-[6rem] flex items-center justify-center">
           {currentQuestion.text}

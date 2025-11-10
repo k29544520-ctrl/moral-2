@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Scores, Category, ResultType } from '../types';
 
@@ -13,41 +12,6 @@ const MAX_SCORES = {
   [Category.Object]: 8 * 5,
   [Category.Situation]: 6 * 5,
 };
-
-interface ResultCardProps {
-    title: string;
-    description: string;
-    score: number;
-    maxScore: number;
-    colorFrom: string;
-    colorTo: string;
-}
-
-const ResultCard: React.FC<ResultCardProps> = ({ title, description, score, maxScore, colorFrom, colorTo }) => {
-    const percentage = Math.round((score / maxScore) * 100);
-
-    return (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 flex flex-col">
-            <h3 className={`text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${colorFrom} ${colorTo}`}>
-                {title}
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 flex-grow">{description}</p>
-            <div className="mt-4">
-                <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">공감 점수</span>
-                    <span className={`text-lg font-bold ${colorTo.replace('bg-', 'text-')}`}>{percentage}%</span>
-                </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
-                    <div
-                        className={`bg-gradient-to-r ${colorFrom} ${colorTo} h-2.5 rounded-full`}
-                        style={{ width: `${percentage}%` }}
-                    ></div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ scores, onRetake }) => {
     const resultData = [
@@ -81,28 +45,41 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ scores, onRetake }) => {
         },
     ];
 
+    const highestResult = resultData.reduce(
+        (max, current) => (current.score > max.score ? current : max),
+        resultData[0]
+    );
+
+    const percentage = Math.round((highestResult.score / highestResult.maxScore) * 100);
+
+
   return (
     <div className="text-center p-4 md:p-8 animate-fade-in w-full">
-      <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 mb-2">
-        나의 공감 유형 결과
+      <h2 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+        나의 핵심 공감 유형은...
+      </h2>
+      <h1 className={`text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r ${highestResult.colors.from} ${highestResult.colors.to} mb-8`}>
+        {highestResult.type}
       </h1>
-      <p className="text-slate-600 dark:text-slate-300 mb-8">
-        각 영역에 대한 당신의 공감 점수입니다.
-      </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
-        {resultData.map(data => (
-            <ResultCard 
-                key={data.type}
-                title={data.type}
-                description={data.description}
-                score={data.score}
-                maxScore={data.maxScore}
-                colorFrom={data.colors.from}
-                colorTo={data.colors.to}
-            />
-        ))}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 mb-10 max-w-lg mx-auto text-left">
+          <p className="text-slate-700 dark:text-slate-200 text-lg leading-relaxed">
+              {highestResult.description}
+          </p>
+          <div className="mt-8">
+              <div className="flex justify-between items-center mb-2">
+                  <span className="text-lg font-medium text-slate-800 dark:text-slate-100">공감 지수</span>
+                  <span className={`text-2xl font-bold ${highestResult.colors.to.replace('to-', 'text-')}`}>{percentage}%</span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-4">
+                  <div
+                      className={`bg-gradient-to-r ${highestResult.colors.from} ${highestResult.colors.to} h-4 rounded-full transition-all duration-500 ease-out`}
+                      style={{ width: `${percentage}%` }}
+                  ></div>
+              </div>
+          </div>
       </div>
+
 
       <button
         onClick={onRetake}
